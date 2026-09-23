@@ -1,0 +1,10 @@
+node_modules/
+.expo/
+.expo-shared/
+dist/
+build/
+static-build/
+*.tsbuildinfo
+lib/*/dist/
+lib/*/node_modules/
+*.log
