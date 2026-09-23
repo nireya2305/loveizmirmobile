@@ -14,6 +14,13 @@ EXPO_PUBLIC_API_BASE_URL=https://loveizmir.com pnpm dev
 Press `i` in Expo to open the iOS simulator. `EXPO_PUBLIC_API_BASE_URL` can be
 overridden for a local API; the app rejects relative native API URLs.
 
+For a simulator-native build (without Expo Go version coupling):
+
+```bash
+pnpm install
+pnpm --filter @workspace/loveizmir exec expo run:ios --device "iPhone 17 Pro"
+```
+
 ## Verification
 
 ```bash
