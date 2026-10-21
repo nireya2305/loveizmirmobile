@@ -1,0 +1,45 @@
+name: Mobile transport policy
+
+on:
+  push:
+    branches:
+      - codex/loveizmir-api-transport-20261021
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-transport-policy-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Regression, typecheck, and production bundles
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Enable repository package manager
+        run: |
+          corepack enable
+          corepack install
+
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run transport regressions and workspace typecheck
+        run: pnpm test
+
+      - name: Build iOS and Android production bundles
+        run: pnpm run build
