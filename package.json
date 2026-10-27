@@ -7,6 +7,6 @@
     "dev": "pnpm --filter @workspace/loveizmir run dev",
     "build": "pnpm --filter @workspace/loveizmir run build",
     "typecheck": "pnpm --filter @workspace/loveizmir exec tsc -p ../../lib/loveizmir-brand/tsconfig.json && pnpm --filter @workspace/loveizmir exec tsc -p ../../lib/api-client-react/tsconfig.json && pnpm --filter @workspace/loveizmir run typecheck",
-    "test": "pnpm --filter @workspace/loveizmir run typecheck"
+    "test": "node --experimental-strip-types --test tests/*.test.ts && pnpm run typecheck"
   }
 }

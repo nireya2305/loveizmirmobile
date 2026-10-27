@@ -2,35 +2,16 @@ import { setAuthTokenGetter, setBaseUrl } from "@workspace/api-client-react";
 import { Platform } from "react-native";
 
 import * as SecureStore from "./secureStorage";
+import { normalizeApiBaseUrl } from "./apiUrlPolicy";
 
 const AUTH_TOKEN_KEY = "auth_session_token";
 const MISSING_NATIVE_API_BASE =
-  "Loveİzmir API yapılandırma hatası: native uygulama için EXPO_PUBLIC_API_BASE_URL mutlak bir http(s) URL olarak ayarlanmalıdır.";
-
-function normalizeAbsoluteBaseUrl(value: string, variableName: string): string {
-  const normalized = value.trim().replace(/\/+$/, "");
-
-  try {
-    const url = new URL(normalized);
-    if (
-      (url.protocol !== "https:" && url.protocol !== "http:") ||
-      !url.hostname
-    ) {
-      throw new Error("unsupported URL");
-    }
-  } catch {
-    throw new Error(
-      `Loveİzmir API yapılandırma hatası: ${variableName} mutlak bir http(s) URL olmalıdır.`,
-    );
-  }
-
-  return normalized;
-}
+  "Loveİzmir API yapılandırma hatası: native uygulama için EXPO_PUBLIC_API_BASE_URL mutlak bir HTTPS URL olarak ayarlanmalıdır.";
 
 function resolveApiBase(): string {
   const explicitBase = process.env.EXPO_PUBLIC_API_BASE_URL;
   if (explicitBase) {
-    return normalizeAbsoluteBaseUrl(explicitBase, "EXPO_PUBLIC_API_BASE_URL");
+    return normalizeApiBaseUrl(explicitBase, __DEV__);
   }
 
   // Browser deployments intentionally use their current origin so artifact
@@ -42,10 +23,7 @@ function resolveApiBase(): string {
   if (__DEV__) {
     const developmentDomain = process.env.EXPO_PUBLIC_DOMAIN;
     if (developmentDomain) {
-      return normalizeAbsoluteBaseUrl(
-        `https://${developmentDomain}`,
-        "EXPO_PUBLIC_DOMAIN",
-      );
+      return normalizeApiBaseUrl(`https://${developmentDomain}`, true);
     }
   }
 
